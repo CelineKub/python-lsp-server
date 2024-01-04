@@ -1,7 +1,7 @@
-## Before the release:
+!!!Before the release:
 
 1. Create pull request to update CHANGELOG.md with
-    * `loghub python-lsp/python-lsp-server -m vX.X.X`
+    # `loghub python-lsp/python-lsp-server -m vX.X.X`
     * git add -A && git commit -m "Update changelog for X.X.X"
 
     This is necessary to run our tests before the release, so we can be sure
@@ -20,3 +20,4 @@
 9. twine upload dist/*
 10. git push upstream --tags
 11. Create release on Github
+ 
