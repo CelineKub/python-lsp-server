@@ -1,196 +1,157 @@
-# Python LSP Server
+# Replace Google CDN
 
-[![image](https://github.com/python-ls/python-ls/workflows/Linux%20tests/badge.svg)](https://github.com/python-ls/python-ls/actions?query=workflow%3A%22Linux+tests%22) [![image](https://github.com/python-ls/python-ls/workflows/Mac%20tests/badge.svg)](https://github.com/python-ls/python-ls/actions?query=workflow%3A%22Mac+tests%22) [![image](https://github.com/python-ls/python-ls/workflows/Windows%20tests/badge.svg)](https://github.com/python-ls/python-ls/actions?query=workflow%3A%22Windows+tests%22) [![image](https://img.shields.io/github/license/python-ls/python-ls.svg)](https://github.com/python-ls/python-ls/blob/master/LICENSE)
+[![](https://img.shields.io/github/issues/justjavac/ReplaceGoogleCDN.svg)](https://github.com/justjavac/ReplaceGoogleCDN/issues) [![](https://img.shields.io/github/release/justjavac/ReplaceGoogleCDN.svg)](https://github.com/justjavac/ReplaceGoogleCDN/releases)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/kpampjmfiopfpkkepbllemkibefkiice.svg)](https://chrome.google.com/webstore/detail/kpampjmfiopfpkkepbllemkibefkiice)
 
-A Python 3.8+ implementation of the [Language Server Protocol](https://github.com/Microsoft/language-server-protocol).
-(Note: versions <1.4 should still work with Python 3.6)
+将 Google CDN 替换为国内的。
 
-## Installation
+## 缘起
 
-The base language server requires [Jedi](https://github.com/davidhalter/jedi) to provide Completions, Definitions, Hover, References, Signature Help, and Symbols:
+> 由于众所周知的原因，只需替换一个域名就可以继续使用 Google 提供的前端公共库了。
+> 同样，通过 `script` 标记引用这些资源，让网站访问速度瞬间提速！
 
-```
-pip install python-lsp-server
-```
-This will expose the command `pylsp` on your PATH. Confirm that installation succeeded by running `pylsp --help`.
+很多网站，尤其是国外网站，为了加快网站的速度，都使用了 Google 的 CDN。
+但是在天朝，由于某些原因，导致全球最快的 CDN 变成了全球最慢的。
 
-If the respective dependencies are found, the following optional providers will be enabled:
-- [Rope](https://github.com/python-rope/rope) for Completions and renaming
-- [Pyflakes](https://github.com/PyCQA/pyflakes) linter to detect various errors
-- [McCabe](https://github.com/PyCQA/mccabe) linter for complexity checking
-- [pycodestyle](https://github.com/PyCQA/pycodestyle) linter for style checking
-- [pydocstyle](https://github.com/PyCQA/pydocstyle) linter for docstring style checking (disabled by default)
-- [autopep8](https://github.com/hhatto/autopep8) for code formatting
-- [YAPF](https://github.com/google/yapf) for code formatting (preferred over autopep8)
-- [flake8](https://github.com/pycqa/flake8) for error checking (disabled by default)
-- [pylint](https://github.com/PyCQA/pylint) for code linting (disabled by default)
+于是，我写了这个插件/扩展，将 Google 的 CDN 替换成国内的。
 
-Optional providers can be installed using the `extras` syntax. To install [YAPF](https://github.com/google/yapf) formatting for example:
+## 原理
 
-```
-pip install "python-lsp-server[yapf]"
-```
+> 借助浏览器提供的API，实现请求地址重定向 。[浏览器 V2 API ](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest)， [浏览器 V3 API ](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/declarativeNetRequest)
 
-All optional providers can be installed using:
+> > 默认未启用的规则, 如需启用请到扩展选项页自行打开
 
-```
-pip install "python-lsp-server[all]"
-```
+此插件/扩展可以将以下的 cdn 资源替换为国内的：
 
-If you get an error similar to `'install_requires' must be a string or list of strings` then please upgrade setuptools before trying again.
+1. `ajax.googleapis.com` - 前端公共库，替换为 `ajax.loli.net`
+1. `fonts.googleapis.com` - 免费字体库，替换为 `fonts.googleapis.cn`
+1. `themes.googleusercontent.com` - fonts 有时会使用到这个里面的资源，替换为 `themes.loli.net`
+1. `fonts.gstatic.com` - 免费字体库，替换为 `fonts.gstatic.cn`
+1. `www.google.com/recaptcha` - Google 图像验证库，替换为 `www.recaptcha.net/recaptcha`
+1. `secure.gravatar.com` - gravatar 头像，替换为 `gravatar.loli.net`
+1. `maxcdn.bootstrapcdn.com/bootstrap` - bootstrap 框架使用的 CDN，替换为 `lib.baomitu.com/twitter-bootstrap/`
+1. `code.jquery.com/jquery-(version)(suffix)` - jquery 框架使用的 CDN，替换为 `https://fastly.jsdelivr.net/npm/jquery@$verson/dist/jquery$suffix`
+1. `cdnjs.cloudflare.com` - 替换为 `cdnjs.loli.net` 默认未启用, 如需启用请到扩展选项页自行打开
+1. `cdn.jsdelivr.net` - 替换为 `fastly.jsdelivr.net`
+1. `developers.google.com` - 替换为 `developers.google.cn` 默认未启用, 如需启用请到扩展选项页自行打开
+1. `developer.android.com` - 替换为 `developer.android.google.cn` 默认未启用, 如需启用请到扩展选项页自行打开
+1. `source.android.com` - 替换为 `source.android.google.cn` 默认未启用, 如需启用请到扩展选项页自行打开
+1. `www.gstatic.com` - 替换为 `www.gstatic.cn` 默认未启用, 如需启用请到扩展选项页自行打开
+1. `lh3.googleusercontent.com` 默认未启用, 如需启用请到扩展选项页自行打开
+1. `cdn.sstatic.net`- 替换为 `sstatic.net` 默认未启用, 如需启用请到扩展选项页自行打开
 
-```
-pip install -U setuptools
-```
+## 扩展选项页使用简述
 
-### Windows and Linux installation
+1. <strong>双击扩展图标-自动打开扩展选项配置页面</strong>
+1. [扩展选项配置页面原理](extension/options_ui/README.md)
 
-If you use Anaconda/Miniconda, you can install `python-lsp-server` using this conda command
+## v3 功能变更记录[`CHANGELOG-v3-x.x.x`](CHANGELOG-v3-x.x.x.md)
 
-```
-conda install -c conda-forge python-lsp-server
-```
+## v2 功能变更记录[`CHANGELOG-v2-x.x.x`](CHANGELOG-v2-x.x.x.md)
 
-Python-lsp-server is available in the repos of every major Linux distribution, and it is usually called `python-lsp-server` or `python3-pylsp`.
+## 效果
 
-For example, here is how to install it in Debian and Debian-based distributions (E.g. Ubuntu, Pop!_OS, Linux Mint)
+安装扩展/插件后访问 <https://stackoverflow.com/questions> 页面：
 
-```
-sudo apt-get install python3-pylsp
-```
+![](./screen-sof.png)
 
-or Fedora Linux
+第一行是 jquery.min.js 的原始请求 `https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js`，被拦截并替换，返回的状态码为
+307 Internal Redirect，耗时 26ms。第三行是 jquery.min.js 被替换后的请求，33kB，耗时 95ms。
 
-```
-sudo dnf install python-lsp-server
-```
+下表是各种资源的网络请求对比（以替换后的速度为基准 100%）：
 
-or Arch Linux
+| 资源                     | 来源                           | 尺寸(kB) | 时间(ms) | 速度(B/ms) |   百分比 |
+| ------------------------ | ------------------------------ | -------: | -------: | ---------: | -------: |
+| jquery.min.js            | ajax.googleapis.com            |        0 |       26 |          - |        - |
+| stub.en.js               | cdn.sstatic.net                |     18.0 |      293 |       61.4 |      18% |
+| **jquery.min.js**        | **ajax.loli.net** ⚡️          | **33.1** |   **95** |  **348.4** | **100%** |
+| clc.min.js               | cdn.sstatic.net                |      4.2 |      399 |       10.5 |      30% |
+| full.en.js               | cdn.sstatic.net                |     99.6 |      534 |      186.5 |      54% |
+| gpt.js                   | securepubads.g.doubleclick.net |     21.3 |       85 |      250.6 |      72% |
+| analytics.js             | google-analytics.com           |     19.6 |       79 |      248.1 |      71% |
+| quant.js                 | secure.quantserve.com          |      9.1 |      420 |       21.7 |      62% |
+| beacon.js                | sb.scorecardresearch.com       |      1.8 |       73 |       24.7 |      71% |
+| integrator.js            | adservice.google.com 🐌        |      0.3 |       87 |        3.4 |       1% |
+| markup.js                | clc.stackoverflow.com 🐌       |      9.2 |      252 |       36.5 |      10% |
+| osd.js                   | googletagservices.com          |     28.1 |       90 |      312.2 |      89% |
+| rules-p-c1rF4kxgLUzNc.js | rules.quantcount.com 🐌        |      0.4 |       96 |        4.2 |       1% |
+| keyboard-shortcuts.en.js | cdn.sstatic.net                |      7.3 |       75 |       97.3 |    27.9% |
 
-```
-sudo pacman -S python-lsp-server
-````
+## 打包命令
 
-Only on Alpine Linux the package is named differently. You can install it there by typing this command in your terminal:
+> 构建打包结果位于 dist 目录
 
-```
-apk add py3-lsp-server
-```
+```shell
 
-### 3rd Party Plugins
+bash   release-archive.sh
 
-Installing these plugins will add extra functionality to the language server:
-
-- [pylsp-mypy](https://github.com/Richardk2n/pylsp-mypy): [MyPy](http://mypy-lang.org/) type checking for Python >=3.8.
-- [pyls-isort](https://github.com/chantera/python-lsp-isort): code formatting using [isort](https://github.com/PyCQA/isort) (automatic import sorting).
-- [python-lsp-black](https://github.com/python-lsp/python-lsp-black): code formatting using [Black](https://github.com/psf/black).
-- [pyls-memestra](https://github.com/QuantStack/pyls-memestra): detecting the use of deprecated APIs.
-- [pylsp-rope](https://github.com/python-rope/pylsp-rope): Extended refactoring capabilities using [Rope](https://github.com/python-rope/rope).
-- [python-lsp-ruff](https://github.com/python-lsp/python-lsp-ruff): Extensive and fast linting using [ruff](https://github.com/charliermarsh/ruff).
-
-Please see the above repositories for examples on how to write plugins for the Python LSP Server.
-
-[cookiecutter-pylsp-plugin](https://github.com/python-lsp/cookiecutter-pylsp-plugin) is a [cookiecutter](https://cookiecutter.readthedocs.io/) template for setting up a basic plugin project for python-lsp-server. It documents all the essentials you need to know to kick start your own plugin project.
-
-Please file an issue if you require assistance writing a plugin.
-
-## Configuration
-
-Like all language servers, configuration can be passed from the client that talks to this server (i.e. your editor/IDE or other tool that has the same purpose). The details of how this is done depend on the editor or plugin that you are using to communicate with `python-lsp-server`. The configuration options available at that level are documented in [`CONFIGURATION.md`](https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md).
-
-`python-lsp-server` depends on other tools, like flake8 and pycodestyle. These tools can be configured via settings passed from the client (as above), or alternatively from other configuration sources. The following sources are available:
-
-- `pycodestyle`: discovered in `~/.config/pycodestyle`, `setup.cfg`, `tox.ini` and `pycodestyle.cfg`.
-- `flake8`: discovered in `~/.config/flake8`, `.flake8`, `setup.cfg` and `tox.ini`
-
-The default configuration sources are `pycodestyle` and `pyflakes`. If you would like to use `flake8`, you will need to:
-
-1. Disable `pycodestyle`, `mccabe`, and `pyflakes`, by setting their corresponding `enabled` configurations, e.g. `pylsp.plugins.pycodestyle.enabled`, to `false`. This will prevent duplicate linting messages as flake8 includes these tools.
-1. Set `pylsp.plugins.flake8.enabled` to `true`.
-1. Change the `pylsp.configurationSources` setting (in the value passed in from your client) to `['flake8']` in order to use the flake8 configuration instead.
-
-The configuration options available in these config files (`setup.cfg` etc) are documented in the relevant tools:
-
-- [flake8 configuration](https://flake8.pycqa.org/en/latest/user/configuration.html)
-- [pycodestyle configuration](https://pycodestyle.pycqa.org/en/latest/intro.html#configuration)
-
-Overall configuration is computed first from user configuration (in home directory), overridden by configuration passed in by the language client, and then overridden by configuration discovered in the workspace.
-
-As an example, to change the list of errors that pycodestyle will ignore, assuming you are using the `pycodestyle` configuration source (the default), you can:
-
-1. Add the following to your ~/.config/pycodestyle:
-
-   ```
-   [pycodestyle]
-   ignore = E226,E302,E41
-   ```
-
-2. Set the `pylsp.plugins.pycodestyle.ignore` config value from your editor
-3. Same as 1, but add to `setup.cfg` file in the root of the project.
-
-
-Python LSP Server can communicate over WebSockets when configured as follows:
+bash   release-archive-v3.sh
 
 ```
-pylsp --ws --port [port]
-```
 
-The following libraries are required for Web Sockets support:
-- [websockets](https://websockets.readthedocs.io/en/stable/) for Python LSP Server Web sockets using websockets library. refer [Websockets installation](https://websockets.readthedocs.io/en/stable/intro/index.html#installation) for more details
+## 安装
 
-You can install this dependency with command below:
+### 在线安装
 
-```
-pip install 'python-lsp-server[websockets]'
-```
+- [Chrome](https://chrome.google.com/webstore/detail/replace-google-cdn/kpampjmfiopfpkkepbllemkibefkiice)
+- [Firefox](https://addons.mozilla.org/zh-CN/firefox/addon/google-cdn-replace/)
+- [Edge](https://microsoftedge.microsoft.com/addons/detail/replace-google-cdn/cojepngjobmaiajphkijbdcdjnnjhpjc)
 
-## LSP Server Features
+### 手动安装：
 
-* Auto Completion
-* [Autoimport](docs/autoimport.md)
-* Code Linting
-* Code actions
-* Signature Help
-* Go to definition
-* Hover
-* Find References
-* Document Symbols
-* Document Formatting
-* Code folding
-* Multiple workspaces
+Chrome 安装方法（Google 被墙了上不去）：
 
-## Development
+> 1. 下载 [ReplaceGoogleCDN](https://github.com/justjavac/ReplaceGoogleCDN/archive/master.zip) 然后解压，
+>    找到 `extension` 子目录
+> 2. 打开 Chrome，输入: `chrome://extensions/`
+> 3. 勾选 Developer Mode
+> 4. 选择 Load unpacked extension... 然后定位到刚才解压的文件夹里面的 extension 目录，确定
+> 5. 这就安装好了，去掉 Developer Mode 勾选。
 
-Dev install
+### 扩展下载方式三：(来自国内镜像) 克隆源代码以后， 步骤如上： :point_up_2: :point_up_2: :point_up_2:
 
-```
-# (optional) create conda env
-conda create --name python-lsp-server python=3.11 -y
-conda activate python-lsp-server
+1. [ReplaceGoogleCDN gitee 镜像](https://gitee.com/mirrors/replacegooglecdn)
+1. [ReplaceGoogleCDN gitcode 镜像](https://gitcode.com/mirrors/justjavac/replacegooglecdn.git)
 
-pip install -e ".[all,websockets,test]"
-```
+```shell
+# 克隆源代码
+git clone -b master https://gitee.com/mirrors/replacegooglecdn.git --depth=1 --progress
+# 或者
+git clone -b master https://gitcode.com/mirrors/justjavac/replacegooglecdn.git --depth=1 --progress
 
-Run server with ws
+# 更新源代码
+
+git -C replacegooglecdn pull  --depth=1 --progress  --rebase=true
 
 ```
-pylsp --ws -v  # Info level logging
-pylsp --ws -vv # Debug level logging
+
+### 扩展下载方式四：（已经构建好，可以上传扩展市场的代码）
+
+1. [ReplaceGoogleCDN-v3.zip（release v3 版本）支持 chromium 系列浏览器](https://www.jingjingxyk.com/chromium-extension/ReplaceGoogleCDN-v3.zip)
+1. [ReplaceGoogleCDN-v2.zip（release v2 版本）同时支持 firefox 和 chromium 系列浏览器](https://www.jingjingxyk.com/chromium-extension/ReplaceGoogleCDN-v2.zip)
+1. [ReplaceGoogleCDN.zip（全部源码）](https://www.jingjingxyk.com/chromium-extension/ReplaceGoogleCDN.zip)
+
+#### 扩展下载方式四, 构建原理
+
+```text
+# 原理： github: page + action
+
+# 构建脚本
+https://github.com/jingjingxyk/jingjingxyk.github.io/blob/main/tools/setup-gh-pages-step-02-chromium-extension.sh
+
+# 源代码打包下载地址
+https://www.jingjingxyk.com/chromium-extension/ReplaceGoogleCDN.zip
+
+# 已经构建好扩展包下载地址
+https://www.jingjingxyk.com/chromium-extension/ReplaceGoogleCDN-v2.zip
+https://www.jingjingxyk.com/chromium-extension/ReplaceGoogleCDN-v3.zip
+
 ```
 
-To run the test suite:
+## [declarative_net_reques 规则配置示例](extension/rules/README.md)
 
-```sh
-# requires: pip install ".[test]" (see above)
-pytest
-```
+## [测试用例](test/README.md)
 
-After adding configuration options to `schema.json`, refresh the `CONFIGURATION.md` file with
+## [公共 CDN 静态资源库](public-cdn.md)
 
-```
-python scripts/jsonschema2md.py pylsp/config/schema.json CONFIGURATION.md
-```
-
-## License
-
-This project is made available under the MIT License.
+## [网络拨测工具 (测试 公共 CDN 静态资源库 区域可用性)](tools/net-detect.md)
